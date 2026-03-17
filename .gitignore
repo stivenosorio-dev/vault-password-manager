@@ -1,0 +1,26 @@
+# Ignorar archivos de configuración de Vault
+*.vault
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# PyInstaller (ejecutable compilado)
+dist/
+build/
+*.spec
+
+# Entorno virtual si lo usas
+venv/
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
