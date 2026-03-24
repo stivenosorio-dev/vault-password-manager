@@ -15,8 +15,7 @@
 from config.constants import PBKDF2_ITERATIONS, SALT_SIZE
 import sys
 import base64
-
-
+import secrets
 
 # Importación de cryptography (Fernet — encriptación simétrica AES-128 en CBC)
 # Si no está instalada, el programa avisa claramente.
