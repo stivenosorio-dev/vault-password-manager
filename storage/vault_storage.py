@@ -125,7 +125,11 @@ class VaultStorage:
         if datos_plano is None:
             return []
 
-        return json.loads(datos_plano)
+        datos = json.loads(datos_plano)
+        for entrada in datos:
+            if "estado" not in entrada:
+                entrada["estado"] = "activo"
+        return datos
 
     def guardar_entradas(self, entradas: list[dict], clave: bytes, password: str) -> bool:
         """
