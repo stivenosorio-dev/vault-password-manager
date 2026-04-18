@@ -57,8 +57,8 @@ class GeneratorMixin:
         dlg.configure(bg=COLORS["bg_dark"])
         dlg.resizable(False, False)
         dlg.grab_set()
-        dlg.geometry("400x280")
-        self._centrar_ventana_hija(dlg, 400, 280)
+        dlg.geometry("440x320")
+        self._centrar_ventana_hija(dlg, 440, 320)
 
         tk.Label(
             dlg, text="🔑 Generador de Contraseñas",
