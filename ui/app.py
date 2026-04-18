@@ -80,28 +80,33 @@ class VaultApp(UnlockMixin, MainScreenMixin, EntryDialogMixin, ViewDialogMixin, 
         if not ok:
             messagebox.showerror("Error", "No se pudo guardar el vault en disco.")
 
-    def _crear_boton(self, parent, texto: str, comando, color: str, ancho: int = 16) -> tk.Button:
+    def _crear_boton(self, parent, texto: str, comando, color: str, ancho: int = None) -> tk.Button:
         """
-        Crea un botón estilizado con hover.
+        Crea un botón estilizado con hover. Se ajusta automáticamente al texto salvo que se especifique ancho.
 
         Args:
             parent:  widget padre
             texto:   texto del botón
             comando: función a ejecutar al hacer click
             color:   color de fondo
-            ancho:   ancho en caracteres
+            ancho:   ancho en caracteres (opcional)
 
         Retorna:
             tk.Button configurado
         """
-        btn = tk.Button(
-            parent, text=texto, command=comando,
-            font=FONTS["button"], width=ancho,
-            bg=color, fg=COLORS["text_primary"],
-            activebackground=COLORS["accent_hover"],
-            activeforeground=COLORS["text_primary"],
-            relief="flat", bd=0, cursor="hand2"
-        )
+        btn_kwargs = {
+            "text": texto, "command": comando,
+            "font": FONTS["button"],
+            "bg": color, "fg": COLORS["text_primary"],
+            "activebackground": COLORS["accent_hover"],
+            "activeforeground": COLORS["text_primary"],
+            "relief": "flat", "bd": 0, "cursor": "hand2",
+            "padx": 14, "pady": 4
+        }
+        if ancho is not None:
+            btn_kwargs["width"] = ancho
+            
+        btn = tk.Button(parent, **btn_kwargs)
         # Efectos hover
         btn.bind("<Enter>", lambda e: btn.config(bg=COLORS["accent_hover"]))
         btn.bind("<Leave>", lambda e: btn.config(bg=color))
@@ -121,6 +126,16 @@ class VaultApp(UnlockMixin, MainScreenMixin, EntryDialogMixin, ViewDialogMixin, 
         btn.bind("<Leave>", lambda e: btn.config(fg=COLORS["text_secondary"]))
         return btn
 
+    def cambiar_tema(self, nombre_tema: str):
+        from config.constants import set_active_theme, COLORS
+        set_active_theme(nombre_tema)
+        self.root.configure(bg=COLORS["bg_dark"])
+        self._configurar_estilos()
+        if hasattr(self, 'clave') and self.clave is not None:
+            self._mostrar_pantalla_principal()
+        else:
+            self._mostrar_pantalla_desbloqueo()
+
     def _configurar_estilos(self):
         """Configura los estilos de ttk (Treeview, Combobox, Scrollbar)."""
         style = ttk.Style()
@@ -132,13 +147,16 @@ class VaultApp(UnlockMixin, MainScreenMixin, EntryDialogMixin, ViewDialogMixin, 
             foreground=COLORS["text_primary"],
             fieldbackground=COLORS["bg_row"],
             rowheight=32,
-            font=FONTS["table"]
+            font=FONTS["table"],
+            borderwidth=0,
+            relief="flat"
         )
         style.configure("Treeview.Heading",
             background=COLORS["bg_panel"],
             foreground=COLORS["text_secondary"],
             font=FONTS["label_bold"],
-            relief="flat"
+            relief="flat",
+            borderwidth=0
         )
         style.map("Treeview",
             background=[("selected", COLORS["bg_row_sel"])],

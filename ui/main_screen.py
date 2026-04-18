@@ -72,6 +72,20 @@ class MainScreenMixin:
             color=COLORS["bg_input"]
         ).pack(side="right", padx=5, pady=10, ipady=6)
 
+        from config.constants import THEMES, ACTIVE_THEME_NAME
+        self.var_tema = tk.StringVar(value=ACTIVE_THEME_NAME)
+        combo_tema = ttk.Combobox(
+            barra_top, textvariable=self.var_tema, 
+            values=list(THEMES.keys()),
+            state="readonly", width=14, font=FONTS["small"]
+        )
+        combo_tema.pack(side="right", padx=(10, 5), pady=15)
+        
+        def al_cambiar_tema(event):
+            self.cambiar_tema(self.var_tema.get())
+
+        combo_tema.bind("<<ComboboxSelected>>", al_cambiar_tema)
+
         # ── Barra de búsqueda ─────────────────────────────────────────────────
         barra_busq = tk.Frame(self.root, bg=COLORS["bg_dark"], pady=10)
         barra_busq.pack(fill="x", padx=20)
