@@ -184,7 +184,8 @@ class MainScreenMixin:
         for item in self.tabla.get_children():
             self.tabla.delete(item)
 
-        lista = entradas if entradas is not None else self.entradas
+        lista_activos = [e for e in self.entradas if e.get("estado", "activo") == "activo"]
+        lista = entradas if entradas is not None else lista_activos
 
         # Insertar entradas con filas alternas
         for i, e in enumerate(lista):
@@ -202,7 +203,7 @@ class MainScreenMixin:
         self.tabla.tag_configure("impar", background=COLORS["bg_row_alt"])
 
         # Actualizar contador
-        total = len(self.entradas)
+        total = len(lista_activos)
         mostrando = len(lista)
         if mostrando == total:
             self.lbl_contador.config(text=f"{total} entrada{'s' if total != 1 else ''}")
@@ -222,11 +223,13 @@ class MainScreenMixin:
         # Busca en nombre, usuario, URL, notas y categoría
         filtradas = [
             e for e in self.entradas
-            if query in e.get("nombre",    "").lower()
+            if e.get("estado", "activo") == "activo" and (
+               query in e.get("nombre",    "").lower()
             or query in e.get("usuario",   "").lower()
             or query in e.get("url",       "").lower()
             or query in e.get("notas",     "").lower()
             or query in e.get("categoria", "").lower()
+            )
         ]
         self._refrescar_tabla(filtradas)
 
@@ -281,13 +284,13 @@ class MainScreenMixin:
 
         confirmar = messagebox.askyesno(
             "Eliminar entrada",
-            f"¿Eliminar '{entrada.get('nombre', '')}' permanentemente?\n\nEsta acción no se puede deshacer."
+            f"¿Mover '{entrada.get('nombre', '')}' a la papelera (inactiva)?"
         )
         if confirmar:
-            self.entradas = [e for e in self.entradas if e["id"] != entrada["id"]]
+            entrada["estado"] = "inactivo"
             self._guardar_vault()
             self._refrescar_tabla()
-            self._actualizar_estado(f"🗑 '{entrada['nombre']}' eliminada")
+            self._actualizar_estado(f"🗑 '{entrada['nombre']}' eliminada (inactiva)")
 
     def _actualizar_estado(self, mensaje: str):
         """Actualiza el texto de la barra de estado."""
