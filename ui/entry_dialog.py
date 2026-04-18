@@ -44,7 +44,7 @@ class EntryDialogMixin:
         dlg.resizable(False, False)
         dlg.grab_set()   # Modal
 
-        ancho, alto = 500, 800
+        ancho, alto = 500, 660
         dlg.geometry(f"{ancho}x{alto}")
         self._centrar_ventana_hija(dlg, ancho, alto)
 
