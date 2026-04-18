@@ -165,6 +165,7 @@ class EntryDialogMixin:
                     "url":        e_url.get().strip(),
                     "notas":      e_notas.get().strip(),
                     "categoria":  var_cat.get(),
+                    "estado":     "activo",
                     "creado":     ahora,
                     "modificado": ahora,
                 }
